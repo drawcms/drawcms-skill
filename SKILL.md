@@ -79,11 +79,13 @@ files unless a step here points you to one.
    diagram's scene story (the guided walkthrough a reader clicks through). One
    beat per meaningful step of the flow you traced in the repo, in order, with
    titles and descriptions drawn from the code — not generic ("Step 1"). The
-   diagram is **animated by default**: `build` keeps the story and derives motion
-   for the elements each step touches, so a created diagram plays out of the box.
-   Pass `build --static` (or `push --static`) for a still diagram — the story is
-   kept, only the derived element motion is stripped. Motion you set explicitly
-   with `motion` on a node/edge is always kept.
+   diagram is **animated by default**: `build` keeps the story and gives **every
+   connector a continuously-looping motion preset** (sequence messages get
+   `Sequence Flow`, other edges get `Data Flow`), so a created diagram plays on
+   its own across every diagram type. Pass `build --static` (or `push --static`)
+   for a still diagram — the story is kept, all element motion is stripped.
+   Motion you set explicitly with `motion` on a node/edge is always kept (an
+   explicit `loop: false` is honored too).
    Never write a `meta` field; the engine derives it. Use only the vocabulary in
    `references/vocabulary.md`; story/motion details in `references/motion.md`.
 5. **Validate before you claim anything.** `drawcms build <type> .drawcms/<name>.json --json`
@@ -214,12 +216,12 @@ When unsure, prefer `architecture` for "how is this system built" and
 - Labels are semantic: name the protocol/action/direction. Do not invent
   components, fields, or relationships the code does not have — a diagram that
   claims topology the repo lacks is worse than a smaller true one.
-- Motion is on by default: a built diagram animates the elements each step
-  touches, and an ordered scene story (the walkthrough "steps") is compiled from
-  your `beats`. Pass `--static` when the user wants a still diagram (the story is
-  kept, derived element motion is stripped). You can still shape motion in the
-  spec: set `motion: { preset, loop?, speed? }` on a node or edge, and/or add
-  `beats`
+- Motion is on by default: every connector gets a continuously-looping preset
+  (sequence → `Sequence Flow`, other edges → `Data Flow`) and an ordered scene
+  story (the walkthrough "steps") is compiled from your `beats`. Pass `--static`
+  when the user wants a still diagram (the story is kept, all element motion is
+  stripped). You can still shape motion in the spec: set
+  `motion: { preset, loop?, speed? }` on a node or edge, and/or add `beats`
   (the simplest way — an ordered list of `{ title, nodeIds?, edgeIds?, kind? }`
   that compiles into a scene story) or an explicit `story` for full control.
   Animate only what a step is about, never the whole diagram at once. `build`

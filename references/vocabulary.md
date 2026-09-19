@@ -154,10 +154,11 @@ recoverable failure transitions back to an active state.
 
 ## Motion
 
-Animated by default: `beats`/`story` steps derive motion for the elements they
-touch, so a built diagram plays on its own. Pass `--static` for a still diagram.
-Set `motion: { preset, loop?, speed? }` on a node or edge to control it explicitly
-(always kept, even under `--static`).
+Animated by default: every connector gets a continuously-looping preset
+(sequence → `Sequence Flow`, other edges → `Data Flow`) on every diagram type,
+and `beats`/`story` add the walkthrough steps. Pass `--static` for a still
+diagram. Set `motion: { preset, loop?, speed? }` on a node or edge to control it
+explicitly (always kept, including `loop: false`; stripped only under `--static`).
 
 - Node motion presets: `Bounce`, `Spin`, `Pulse Node`, `Shake`.
 - Edge motion presets: `Pulse`, `Data Flow`, `Sequence Flow`,

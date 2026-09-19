@@ -35,7 +35,83 @@ test("by default a diagram gets a scene story AND animates (engine-derived motio
   assert.ok(animated.length > 0, "expected engine-derived motion by default");
 });
 
-test("--static keeps the story but strips engine-derived motion", () => {
+test("every edge on every diagram type animates and loops by default", () => {
+  // Types the engine/WebMCP would leave static (flowchart control-flow, ER
+  // structural) must still animate under the skill's policy.
+  const cases = [
+    {
+      diagramType: "flowchart",
+      nodes: [
+        { id: "s", label: "Start", type: "terminator" },
+        { id: "p", label: "Process", type: "process" },
+      ],
+      edges: [{ source: "s", target: "p", label: "begin" }],
+    },
+    {
+      diagramType: "entity-relationship",
+      nodes: [
+        { id: "c", label: "Customer", type: "er-entity" },
+        { id: "o", label: "Order", type: "er-entity" },
+      ],
+      edges: [{ source: "c", target: "o", label: "places" }],
+    },
+    {
+      diagramType: "architecture",
+      nodes: [
+        { id: "a", label: "Web", type: "arch-frontend" },
+        { id: "b", label: "API", type: "arch-backend" },
+      ],
+      edges: [{ source: "a", target: "b", label: "HTTPS" }],
+    },
+  ];
+  for (const spec of cases) {
+    const result = buildDocument(spec);
+    assert.equal(result.ok, true, spec.diagramType);
+    assert.equal(result.motion, "animated", spec.diagramType);
+    for (const e of result.document.edges) {
+      assert.ok(e.data.preset, `${spec.diagramType}: every edge has a preset`);
+      assert.equal(e.data.motionLoop, true, `${spec.diagramType}: edge loops continuously`);
+    }
+  }
+});
+
+test("sequence edges get the Sequence Flow preset by default", () => {
+  const result = buildDocument({
+    diagramType: "sequence",
+    nodes: [
+      { id: "u", label: "User", type: "sequence-actor" },
+      { id: "a", label: "API", type: "sequence-participant" },
+    ],
+    edges: [{ source: "u", target: "a", label: "POST", type: "sequence-message" }],
+  });
+  assert.equal(result.document.edges[0].data.preset, "Sequence Flow");
+  assert.equal(result.document.edges[0].data.motionLoop, true);
+});
+
+test("author-set edge motion is respected under the animate-by-default policy", () => {
+  const result = buildDocument({
+    diagramType: "architecture",
+    nodes: [
+      { id: "a", label: "Web", type: "arch-frontend" },
+      { id: "b", label: "API", type: "arch-backend" },
+      { id: "c", label: "DB", type: "infra-postgresql" },
+    ],
+    edges: [
+      { source: "a", target: "b", label: "HTTPS", motion: { preset: "Pulse", loop: false } },
+      { source: "b", target: "c", label: "SQL" },
+    ],
+  });
+  const ab = result.document.edges.find((e) => e.source === "a");
+  const bc = result.document.edges.find((e) => e.source === "b");
+  // Explicit preset + explicit loop:false are both preserved.
+  assert.equal(ab.data.preset, "Pulse");
+  assert.equal(ab.data.motionLoop, false);
+  // The plain edge gets the looping default.
+  assert.equal(bc.data.preset, "Data Flow");
+  assert.equal(bc.data.motionLoop, true);
+});
+
+test("--static strips the default edge motion", () => {
   const spec = {
     name: "X",
     diagramType: "architecture",
