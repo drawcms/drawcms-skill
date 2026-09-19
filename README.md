@@ -57,24 +57,24 @@ The skill is one self-contained folder. There are two ways to install it.
 npx skills add drawcms/drawcms-skill -g       # drop -g for the current project only
 ```
 
-This installs the **skill instructions** (`SKILL.md` + references) into your
-agents via the [open skills CLI](https://github.com/vercel-labs/skills). It does
-**not** build or install the `drawcms` binary — the engine bundle is generated
-locally (it is AGPL-3.0 from `@drawcms/editor` and deliberately not shipped in
-this MIT repo). Do the one-time CLI setup once:
+This installs the whole skill folder — `SKILL.md`, references, **and** the CLI
+(`bin/`, `lib/`, `scripts/`) — into your agents via the
+[open skills CLI](https://github.com/vercel-labs/skills). It does not download
+the engine bundle (the AGPL-3.0 engine from `@drawcms/editor` is deliberately
+not committed to this MIT repo), so that is fetched on first use:
 
 ```bash
-git clone https://github.com/drawcms/drawcms-skill.git
-cd drawcms-skill
-npm install
-npm run fetch-engine     # downloads lib/engine.mjs (checksum-verified) from the editor release
-npm link                 # puts `drawcms` on PATH (optional; see "Put drawcms on PATH")
-drawcms doctor           # expect: node OK, engine OK
+# The agent does this automatically on an ENGINE_MISSING error. To do it yourself,
+# run it from wherever the skill was installed, e.g.:
+node ~/.claude/skills/drawcms/scripts/fetch-engine.mjs   # checksum-verified download
 ```
 
-Until the engine is fetched, engine-dependent commands (`build`, `push`, `local`,
-`edit`, `grammar`) return a clear `ENGINE_MISSING` error telling the agent to run
-`npm run fetch-engine`. `login`/`init`/`pull`/`status`/`diff` work without it.
+No `git clone` or `npm install` is needed to *use* the skill: `fetch-engine.mjs`
+and the CLI run on Node ≥18 alone (the engine bundle carries its own deps
+inlined). Until the engine is fetched, engine-dependent commands (`build`,
+`push`, `local`, `edit`, `grammar`) return a clear `ENGINE_MISSING` error telling
+the agent to run `fetch-engine`. `login`/`init`/`pull`/`status`/`diff` work
+without it.
 
 ### Manual: copy or symlink the folder
 
