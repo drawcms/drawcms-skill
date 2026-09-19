@@ -304,12 +304,19 @@ Confirm either form works before the first real command:
 drawcms doctor           # or: node <this-skill-folder>/bin/drawcms.mjs doctor
 ```
 
-`doctor` checks Node and that the bundled diagram engine loads. If it reports
-the engine is missing, run `npm run fetch-engine` in the skill folder — the
-bundle is a prebuilt release asset, downloaded (not committed), so a fresh
-install has none. A
-`command not found` for `drawcms` means fall back to form 2; it is not a reason
-to stop.
+`doctor` checks Node and that the bundled diagram engine loads. **If it reports
+the engine is missing (or any command returns `ENGINE_MISSING`), fetch it and
+retry — do not stop.** The engine is a prebuilt release asset that is downloaded,
+not committed, so a fresh skill install has none until first use:
+
+```bash
+node <this-skill-folder>/scripts/fetch-engine.mjs   # downloads + checksum-verifies lib/engine.mjs
+```
+
+This needs only Node (no `npm install`); `<this-skill-folder>` is where this
+SKILL.md lives. Then re-run your command. A `command not found` for `drawcms`
+means fall back to form 2 (`node <this-skill-folder>/bin/drawcms.mjs`); it is not
+a reason to stop.
 
 ## References — read on demand only
 
