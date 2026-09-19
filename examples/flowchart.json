@@ -1,0 +1,19 @@
+{
+  "name": "Deploy pipeline",
+  "diagramType": "flowchart",
+  "nodes": [
+    { "id": "start", "label": "Push to main", "type": "terminator" },
+    { "id": "build", "label": "Build & test", "type": "process" },
+    { "id": "gate", "label": "Tests pass?", "type": "decision" },
+    { "id": "deploy", "label": "Deploy", "type": "process" },
+    { "id": "fail", "label": "Notify author", "type": "process" },
+    { "id": "done", "label": "Live", "type": "terminator" }
+  ],
+  "edges": [
+    { "source": "start", "target": "build" },
+    { "source": "build", "target": "gate" },
+    { "source": "gate", "target": "deploy", "label": "yes" },
+    { "source": "gate", "target": "fail", "label": "no" },
+    { "source": "deploy", "target": "done" }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Login request",
+  "diagramType": "sequence",
+  "nodes": [
+    { "id": "user", "label": "User", "type": "sequence-participant" },
+    { "id": "api", "label": "API", "type": "sequence-participant" },
+    { "id": "db", "label": "Auth DB", "type": "sequence-participant" }
+  ],
+  "edges": [
+    { "source": "user", "target": "api", "label": "POST /login", "type": "sequence-message" },
+    { "source": "api", "target": "db", "label": "lookup user", "type": "sequence-message" },
+    { "source": "db", "target": "api", "label": "row", "type": "sequence-message-return" },
+    { "source": "api", "target": "user", "label": "session token", "type": "sequence-message-return" }
+  ]
+}

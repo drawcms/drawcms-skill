@@ -1,0 +1,15 @@
+{
+  "name": "Analytics ingestion",
+  "diagramType": "data-flow",
+  "nodes": [
+    { "id": "events", "label": "Client events", "type": "data-source" },
+    { "id": "enrich", "label": "Enrich & validate", "type": "data-transform" },
+    { "id": "warehouse", "label": "Warehouse", "type": "data-store" },
+    { "id": "dashboard", "label": "Dashboards", "type": "data-sink" }
+  ],
+  "edges": [
+    { "source": "events", "target": "enrich", "label": "raw JSON" },
+    { "source": "enrich", "target": "warehouse", "label": "typed rows" },
+    { "source": "warehouse", "target": "dashboard", "label": "aggregates" }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "drawcms-skill",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Agent skill + CLI that turns a code repository into maintained DrawCMS diagrams synced to a cloud project.",
+  "license": "MIT",
+  "bin": {
+    "drawcms": "./bin/drawcms.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "fetch-engine": "node scripts/fetch-engine.mjs",
+    "check:engine": "node scripts/fetch-engine.mjs --check",
+    "build:engine": "node scripts/build-engine.mjs",
+    "test": "node --test 'test/**/*.test.mjs'",
+    "lint:skill": "node scripts/check-skill.mjs",
+    "package": "node scripts/package.mjs",
+    "ci": "npm run check:engine && npm run lint:skill && npm test"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.4",
+    "zod": "3.25.76"
+  }
+}

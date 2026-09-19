@@ -1,0 +1,20 @@
+{
+  "name": "Checkout request walkthrough",
+  "diagramType": "architecture",
+  "nodes": [
+    { "id": "browser", "label": "Browser", "type": "arch-frontend" },
+    { "id": "api", "label": "API", "type": "arch-backend", "motion": { "preset": "Pulse Node" } },
+    { "id": "redis", "label": "Redis", "type": "infra-redis" },
+    { "id": "db", "label": "PostgreSQL", "type": "infra-postgresql" }
+  ],
+  "edges": [
+    { "source": "browser", "target": "api", "label": "POST /checkout" },
+    { "source": "api", "target": "redis", "label": "read-through", "motion": { "preset": "Data Flow" } },
+    { "source": "api", "target": "db", "label": "SQL", "motion": { "preset": "Data Flow" } }
+  ],
+  "beats": [
+    { "title": "Browser posts the checkout", "description": "The client sends POST /checkout to the API.", "nodeIds": ["browser", "api"], "kind": "request" },
+    { "title": "API reads the cache", "description": "The API checks Redis for the product data first.", "nodeIds": ["redis"], "kind": "data-flow" },
+    { "title": "Cache miss falls through to Postgres", "description": "On a miss, the API reads from PostgreSQL and repopulates the cache.", "nodeIds": ["db"], "kind": "data-flow" }
+  ]
+}

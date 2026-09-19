@@ -1,0 +1,20 @@
+{
+  "name": "Web app runtime architecture",
+  "diagramType": "architecture",
+  "nodes": [
+    { "id": "browser", "label": "Browser", "type": "arch-frontend" },
+    { "id": "api", "label": "API server", "type": "arch-backend" },
+    { "id": "cache", "label": "Redis", "type": "infra-redis" },
+    { "id": "db", "label": "PostgreSQL", "type": "infra-postgresql" }
+  ],
+  "edges": [
+    { "source": "browser", "target": "api", "label": "HTTPS" },
+    { "source": "api", "target": "cache", "label": "read-through" },
+    { "source": "api", "target": "db", "label": "SQL" }
+  ],
+  "beats": [
+    { "title": "Browser calls the API", "description": "The client sends an HTTPS request to the API server.", "nodeIds": ["browser", "api"] },
+    { "title": "API checks the cache", "description": "The API reads through Redis for hot data first.", "nodeIds": ["cache"] },
+    { "title": "Cache miss reads the database", "description": "On a miss the API falls through to PostgreSQL.", "nodeIds": ["db"] }
+  ]
+}

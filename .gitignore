@@ -1,0 +1,12 @@
+node_modules/
+# lib/engine.mjs is the prebuilt DrawCMS engine bundle, fetched by
+# `npm run fetch-engine` from a drawcms/drawcms release asset (checksum-pinned).
+# NOT committed: @drawcms/editor is AGPL-3.0-only and this repo (the agent skill
+# + CLI wrapper) is MIT, so bundling and redistributing the AGPL engine here
+# would be a license conflict. Each user fetches it at setup; `drawcms doctor`
+# and SKILL.md step 0 tell the agent to run `npm run fetch-engine` if it's absent.
+lib/engine.mjs
+# Local CLI auth/state (created by later commands).
+.drawcms/
+# Packaged skill output.
+dist/
