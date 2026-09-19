@@ -8,7 +8,7 @@ import { buildDocument } from "../lib/build.mjs";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const EXAMPLES = resolve(HERE, "..", "examples");
 
-test("by default a diagram gets a scene story but stays static (no element motion)", () => {
+test("by default a diagram gets a scene story AND animates (engine-derived motion)", () => {
   const result = buildDocument({
     name: "X",
     diagramType: "architecture",
@@ -27,15 +27,15 @@ test("by default a diagram gets a scene story but stays static (no element motio
     ],
   });
   assert.equal(result.ok, true);
-  assert.equal(result.motion, "static");
+  assert.equal(result.motion, "animated");
   // The walkthrough is present…
   assert.equal(result.document.motion.story.scenes[0].steps.length, 2);
-  // …but nothing animates.
+  // …and the engine derived motion for the elements the beats touch.
   const animated = [...result.document.nodes, ...result.document.edges].filter((e) => e.data?.preset);
-  assert.equal(animated.length, 0);
+  assert.ok(animated.length > 0, "expected engine-derived motion by default");
 });
 
-test("--animate keeps the engine-derived motion", () => {
+test("--static keeps the story but strips engine-derived motion", () => {
   const spec = {
     name: "X",
     diagramType: "architecture",
@@ -46,22 +46,43 @@ test("--animate keeps the engine-derived motion", () => {
     edges: [{ source: "a", target: "b", label: "x" }],
     beats: [{ title: "flow", nodeIds: ["a", "b"] }],
   };
-  const animated = buildDocument(spec, { animate: true });
-  assert.equal(animated.motion, "animated");
-  assert.ok([...animated.document.edges].some((e) => e.data?.preset));
+  const still = buildDocument(spec, { static: true });
+  assert.equal(still.motion, "static");
+  assert.equal(still.document.motion.story.scenes[0].steps.length, 1);
+  const animated = [...still.document.nodes, ...still.document.edges].filter((e) => e.data?.preset);
+  assert.equal(animated.length, 0);
 });
 
-test("author-set motion survives a default static build; engine-derived motion is stripped", () => {
-  const result = buildDocument({
-    name: "X",
-    diagramType: "architecture",
-    nodes: [
-      { id: "a", label: "API", type: "arch-backend", motion: { preset: "Pulse Node" } },
-      { id: "b", label: "DB", type: "infra-postgresql" },
-    ],
-    edges: [{ source: "a", target: "b", label: "SQL" }],
-    beats: [{ title: "read", nodeIds: ["a", "b"] }],
-  });
+test("legacy { animate: false } still yields a static build", () => {
+  const result = buildDocument(
+    {
+      diagramType: "architecture",
+      nodes: [
+        { id: "a", label: "A", type: "arch-frontend" },
+        { id: "b", label: "B", type: "arch-backend" },
+      ],
+      edges: [{ source: "a", target: "b", label: "x" }],
+      beats: [{ title: "flow", nodeIds: ["a", "b"] }],
+    },
+    { animate: false },
+  );
+  assert.equal(result.motion, "static");
+});
+
+test("author-set motion survives a --static build; engine-derived motion is stripped", () => {
+  const result = buildDocument(
+    {
+      name: "X",
+      diagramType: "architecture",
+      nodes: [
+        { id: "a", label: "API", type: "arch-backend", motion: { preset: "Pulse Node" } },
+        { id: "b", label: "DB", type: "infra-postgresql" },
+      ],
+      edges: [{ source: "a", target: "b", label: "SQL" }],
+      beats: [{ title: "read", nodeIds: ["a", "b"] }],
+    },
+    { static: true },
+  );
   const withMotion = [...result.document.nodes, ...result.document.edges]
     .filter((e) => e.data?.preset)
     .map((e) => e.data.preset);

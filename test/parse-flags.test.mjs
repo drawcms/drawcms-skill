@@ -19,10 +19,13 @@ test("--flag=value form is honored", () => {
   assert.equal(flags.type, "sequence");
 });
 
-test("--animate is boolean and leaves a trailing positional alone", () => {
-  const { flags, positional } = parseFlags(["push", "--animate"]);
-  assert.equal(flags.animate, true);
-  assert.deepEqual(positional, ["push"]);
+test("--static and --animate are boolean and leave a trailing positional alone", () => {
+  const a = parseFlags(["push", "--static"]);
+  assert.equal(a.flags.static, true);
+  assert.deepEqual(a.positional, ["push"]);
+  const b = parseFlags(["push", "--animate"]);
+  assert.equal(b.flags.animate, true);
+  assert.deepEqual(b.positional, ["push"]);
 });
 
 test("--force and --json are booleans", () => {

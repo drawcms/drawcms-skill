@@ -152,10 +152,12 @@ Edges: default transition connector; label with the event that causes the
 transition (`dequeue`, `error`, `backoff elapsed`, `max attempts`). A
 recoverable failure transitions back to an active state.
 
-## Motion (opt-in only)
+## Motion
 
-Static by default. Only add motion when the user asks for an animated or
-presentation diagram. Set `motion: { preset, loop?, speed? }` on a node or edge.
+Animated by default: `beats`/`story` steps derive motion for the elements they
+touch, so a built diagram plays on its own. Pass `--static` for a still diagram.
+Set `motion: { preset, loop?, speed? }` on a node or edge to control it explicitly
+(always kept, even under `--static`).
 
 - Node motion presets: `Bounce`, `Spin`, `Pulse Node`, `Shake`.
 - Edge motion presets: `Pulse`, `Data Flow`, `Sequence Flow`,

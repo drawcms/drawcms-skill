@@ -47,8 +47,8 @@ path, the components that matter, and honest relationships.
    SKILL.md). Label edges with the real protocol/action. **Include `beats`** —
    an ordered walkthrough of the flow you just traced, one beat per meaningful
    step, titles/descriptions from the code — so the diagram ships with a guided
-   story by default (static; motion stays opt-in). Do not add a component, edge,
-   or beat you cannot point to in the code.
+   story by default (animated; pass `--static` for a still diagram). Do not add a
+   component, edge, or beat you cannot point to in the code.
 7. **Validate, fix, push** per the SKILL.md fast path.
 
 ## What to leave out

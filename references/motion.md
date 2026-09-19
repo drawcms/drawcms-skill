@@ -1,14 +1,14 @@
 # Motion and stories
 
 Diagrams ship with a **scene story by default** — the ordered walkthrough steps
-a reader clicks through — but stay **static by default**: the story is present,
-and elements do not animate unless animation is asked for. So author `beats`
-(or a `story`) on every diagram; add motion presets only when the user wants an
-animated, walkthrough, or presentation diagram.
+a reader clicks through — and are **animated by default**: the story is present,
+and the elements each step touches animate so the diagram plays as soon as it is
+created. So author `beats` (or a `story`) on every diagram; motion comes for
+free from them. Ask for `--static` only when the user wants a still diagram.
 
-`build` keeps the story and, unless you pass `--animate` (or set `motion`
-explicitly on an element), strips the motion presets the engine derives for a
-beat — leaving a static guided walkthrough. Motion you set explicitly on a
+`build` keeps the story and derives motion presets for the elements each beat
+touches. Pass `--static` to strip that derived motion (the story stays) for a
+still diagram. Motion you set explicitly on a
 node/edge is always kept. Playback is human-driven in the editor — the skill
 authors the story, the viewer presses play. `prefers-reduced-motion` is
 respected automatically.
