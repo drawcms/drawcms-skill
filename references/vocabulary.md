@@ -51,13 +51,16 @@ fidelity to the code, not aesthetics.
 
 Boundaries (optional grouping frames): `boundary-region`,
 `boundary-security-group`, `boundary-trust`, `boundary-deployment`,
-`boundary-data`. These render a large titled frame but do **not** structurally
-contain other nodes — the spec has no parent/child field. A frame with nothing
+`boundary-data`. In the pinned CLI engine these render a large titled frame but do **not** structurally
+contain other nodes — that engine's spec has no parent/child field. A frame with nothing
 positioned inside it draws as an empty box (`CONTAINER_USED_AS_STEP` warning).
 Prefer conveying grouping through layout (tier order, dependency direction);
 reach for a frame only when a trust/deployment region is the diagram's point,
 and then give its members explicit `position` coordinates that fall within the
-frame. See the grouping rule in SKILL.md.
+frame. The current live WebMCP workflow supports real `parentId` membership,
+Iconify search, and styled compositions; see `references/webmcp-composition.md`
+after checking the connected tool schemas. Do not apply the CLI limitation to
+an editor that advertises these capabilities.
 
 ### Infrastructure brand elements (self-hosted / open source)
 

@@ -1,13 +1,29 @@
 ---
 name: drawcms
-description: Turn a code repository into maintained DrawCMS diagrams (architecture, workflow/flowchart, sequence, data-flow, lifecycle). Analyze a codebase, author typed JSON, and validate it with a git-like CLI. Sync to a DrawCMS cloud project (login → init → pull → push), or build for a self-hosted open-source editor with no account (`drawcms local`). Use when the user asks to create, generate, update, or sync a diagram of a repository or system in DrawCMS — for example "diagram this repo's architecture in DrawCMS", "update the DrawCMS architecture diagram after these changes", "push my diagram to DrawCMS", or "build a diagram for my self-hosted DrawCMS editor".
+description: Create and update DrawCMS diagrams (architecture, flowchart, sequence, data-flow, lifecycle) from code, system descriptions, or visual references. Use live WebMCP for icon search, composed cards, grouping, styling, motion, and scene stories; use the CLI for repository diagrams and cloud sync. Use when the user asks to diagram a system in DrawCMS, recreate a reference diagram, edit a live canvas, or sync diagrams with a repository.
 license: MIT
 metadata:
   version: "0.1"
   author: drawcms
 ---
 
-# DrawCMS repo diagrams
+# DrawCMS diagrams
+
+Choose the workflow from the user's source and destination:
+
+- **Live canvas, WebMCP, or a reference image:** read
+  `references/webmcp-composition.md`. Inspect the live tool schemas, search
+  icons, and compose editable artwork with real parent–child membership.
+  Preserve the reference's layout, typography, and relationships. Do not start
+  CLI login/init or replace the user's selected document with another target.
+- **Repository-derived diagrams and sync:** use the CLI workflow below. Read
+  the code to determine topology and use the pinned engine's supported schema.
+
+The CLI's bundled engine and the live site's WebMCP can be different versions.
+Icon fetching and composition fields described in the live workflow require
+those capabilities in the connected editor; do not assume an older CLI engine
+supports them. If missing, report the specific limitation instead of silently
+substituting generic shapes or claiming visual fidelity.
 
 Turn a codebase into validated DrawCMS diagrams that live in a cloud project and
 stay in sync as the code changes. You (the agent) do the judgment — read the
@@ -15,7 +31,7 @@ repo, decide what to show, author typed JSON. The `drawcms` CLI is the
 deterministic half: it validates every diagram against the real DrawCMS engine
 and syncs it. It never guesses and never invents topology.
 
-## Fast path
+## Repository fast path
 
 Use this bounded path for ordinary requests. Do not read the `references/`
 files unless a step here points you to one.
@@ -201,18 +217,22 @@ When unsure, prefer `architecture` for "how is this system built" and
   treat its output as a lookup to confirm, not a fact.
 - One obvious main path. Side branches leave the nearest main-path node. Remove
   low-value edges rather than adding more.
-- **Grouping: prefer layout over frames.** The clearest diagrams come from
+- **CLI grouping on the pinned engine:** the clearest repository diagrams come from
   automatic layout — omit `position` and the engine ranks nodes into tiers and
   reduces crossings. Convey grouping through that flow (clients left/top, the
   services they call to the right/below, datastores clustered past the
   services), not through `boundary-*` / container frames. Those frames do
-  **not** actually enclose other nodes — the spec has no parent/child field, so
+  **not** actually enclose other nodes in this CLI engine's spec, which has no parent/child field, so
   a boundary is a floating box that renders empty or overlapping unless you
   hand-place every member inside it with explicit coordinates, which fights the
   layout engine. Use a boundary frame only when a trust or deployment region is
   the point of the diagram; then give its members explicit positions kept within
   the frame. Otherwise leave frames out — a clean auto-laid diagram beats one
   cluttered with empty boxes.
+- **Live WebMCP grouping:** use `parentId` when advertised, with explicit
+  child positions relative to the parent. A background card can parent its
+  icon, title, caption, and badge; a surrounding panel can parent several cards.
+  See `references/webmcp-composition.md` for grouping, editing, and validation.
 - Labels are semantic: name the protocol/action/direction. Do not invent
   components, fields, or relationships the code does not have — a diagram that
   claims topology the repo lacks is worse than a smaller true one.
@@ -326,6 +346,7 @@ a reason to stop.
 
 ## References — read on demand only
 
+- `references/webmcp-composition.md` — live editing and visual-reference recreation with icon search, grouped artwork, typography, motion, and scenes.
 - `references/analysis.md` — how to read a repo into a diagram (first run + updates).
 - `references/vocabulary.md` — the exact node/edge/motion types per diagram type.
 - `references/motion.md` — motion presets, beats, and scene stories (walkthrough steps).
